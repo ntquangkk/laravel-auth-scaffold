@@ -1,0 +1,13 @@
+{{ auto_gen_tag }}
+Route::prefix('{{ modelSnake }}')->group(function () {
+    Route::post('register', [{{ model }}ApiAuthController::class, 'register']);
+    Route::post('login', [{{ model }}ApiAuthController::class, 'login']);
+    Route::post('forgot-password', [{{ model }}ApiAuthController::class, 'forgotPassword']);
+    Route::post('reset-password', [{{ model }}ApiAuthController::class, 'resetPassword']);
+    Route::post('verify-otp', [{{ model }}ApiAuthController::class, 'verifyOtp']);
+
+    // Ensure '{{ modelSnake }}_api' guard is in middleware for {{ model }}
+    Route::middleware('auth:sanctum,{{ modelSnake }}_api')->group(function () {
+        Route::post('logout', [{{ model }}ApiAuthController::class, 'logout']);
+    });
+});

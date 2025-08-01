@@ -1,0 +1,27 @@
+<?php
+{{ auto_gen_flag }}
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        Schema::create('{{ otp_table }}', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('{{ model_table }}')->onDelete('cascade');
+            $table->string('code');
+            $table->string('type')->default('email');
+            $table->timestamp('expires_at');
+            $table->timestamp('used_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists('{{ otp_table }}');
+    }
+};

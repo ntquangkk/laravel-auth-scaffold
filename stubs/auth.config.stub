@@ -1,0 +1,22 @@
+        {{ auto_gen_tag }}
+        '{{ modelSnake }}_api' => [
+            'driver' => 'sanctum', // or passport, etc.
+            'provider' => '{{ modelSnake }}s',
+        ],
+        '{{ modelSnake }}_web' => [
+            'driver' => 'session',
+            'provider' => '{{ modelSnake }}s',
+        ],
+
+        {{ auto_gen_tag }}
+        '{{ modelSnake }}s' => [
+            'driver' => 'eloquent',
+            'model' => {{ namespace }}\Models\{{ model }}::class,
+        ],
+
+        {{ auto_gen_tag }}
+        '{{ modelSnake }}s' => [
+            'provider' => '{{ modelSnake }}s',
+            'table' => '{{ modelSnake }}_password_reset_tokens',
+            'expire' => 60,
+        ],

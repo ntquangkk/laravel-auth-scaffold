@@ -1,0 +1,19 @@
+{{ auto_gen_tag }}
+Route::prefix('{{ modelSnake }}')->middleware('web')->group(function () {
+    Route::middleware('guest:{{ modelSnake }}_web')->group(function () {
+        Route::get('login', [{{ model }}WebAuthController::class, 'showLoginForm'])->name('{{ modelSnake }}.login');
+        Route::post('login', [{{ model }}WebAuthController::class, 'login']);
+        Route::get('register', [{{ model }}WebAuthController::class, 'showRegisterForm'])->name('{{ modelSnake }}.register');
+        Route::post('register', [{{ model }}WebAuthController::class, 'register']);
+        Route::get('forgot-password', [{{ model }}WebAuthController::class, 'showForgotPasswordForm'])->name('{{ modelSnake }}.forgot-password');
+        Route::post('forgot-password', [{{ model }}WebAuthController::class, 'forgotPassword']);
+        Route::get('reset-password/{token}', [{{ model }}WebAuthController::class, 'showResetPasswordForm'])->name('{{ modelSnake }}.reset-password');
+        Route::post('reset-password', [{{ model }}WebAuthController::class, 'resetPassword']);
+        Route::get('verify-otp', [{{ model }}WebAuthController::class, 'showVerifyOtpForm'])->name('{{ modelSnake }}.verify-otp');
+        Route::post('verify-otp', [{{ model }}WebAuthController::class, 'verifyOtp']);
+    });
+
+    Route::middleware('auth:{{ modelSnake }}_web')->group(function () {
+        Route::post('logout', [{{ model }}WebAuthController::class, 'logout'])->name('{{ modelSnake }}.logout');
+    });
+});

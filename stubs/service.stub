@@ -1,0 +1,116 @@
+<?php
+{{ auto_gen_flag }}
+
+namespace {{ namespace }}\Services;
+
+use {{ namespace }}\Models\{{ model }};
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\Registered;
+
+class {{ model }}AuthService
+{
+    // Shared logic for registration
+    public function register(array $data)
+    {
+        $user = {{ model }}::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'otp' => rand(100000, 999999),
+        ]);
+
+        event(new Registered($user));
+        $this->sendOtpEmail($user);
+
+        return $user;
+    }
+
+    // Shared logic for OTP verification
+    public function verifyOtp(array $data)
+    {
+        $user = {{ model }}::where('email', $data['email'])->where('otp', $data['otp'])->first();
+        
+        if (!$user) {
+            throw new \Exception('Invalid OTP.');
+        }
+
+        $user->email_verified_at = now();
+        $user->otp = null;
+        $user->save();
+    }
+
+    // Shared logic for password reset link
+    public function sendPasswordResetLink(array $data)
+    {
+        $status = Password::broker('{{ modelSnake }}s')->sendResetLink(['email' => $data['email']]);
+
+        if ($status !== Password::RESET_LINK_SENT) {
+            throw new \Exception('Password reset link failed.');
+        }
+    }
+
+    // Shared logic for password reset
+    public function resetPassword(array $data)
+    {
+        $status = Password::broker('{{ modelSnake }}s')
+            ->reset($data, function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                ])->save();
+            });
+
+        if ($status !== Password::PASSWORD_RESET) {
+            throw new \Exception('Password reset failed.');
+        }
+    }
+
+    // Shared logic for sending OTP email
+    protected function sendOtpEmail($user)
+    {
+        Mail::raw("Your OTP is: {$user->otp}", function ($message) use ($user) {
+            $message->to($user->email)->subject('Account Verification OTP');
+        });
+    }
+
+    // API-specific login
+    public function login(array $credentials)
+    {
+        $user = {{ model }}::where('email', $credentials['email'])->first();
+        
+        if ($user && Hash::check($credentials['password'], $user->password)) {
+            // Uncomment for using OTP
+            // if (!$user->email_verified_at) {
+            //     throw new \Exception('Account not verified. Please check your email for OTP.');
+            // }
+            return $user->createToken('auth_token')->plainTextToken;
+        }
+
+        return false;
+    }
+
+    // API-specific logout
+    public function logout($user)
+    {
+        $user->currentAccessToken()->delete();
+    }
+
+    // Web-specific login
+    public function webLogin(array $credentials)
+    {
+        if (Auth::guard('{{ modelSnake }}_web')->attempt($credentials)) {
+            return Auth::guard('{{ modelSnake }}_web')->user();
+        }
+
+        throw new \Exception('Invalid credentials');
+    }
+
+    // Web-specific logout
+    public function webLogout()
+    {
+        Auth::guard('{{ modelSnake }}_web')->logout();
+    }
+}

@@ -1,0 +1,22 @@
+<?php
+{{ auto_gen_flag }}
+
+namespace {{ namespace }}\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class {{ model }}LoginRequest extends FormRequest
+{
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
+    {
+        return [
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ];
+    }
+}
