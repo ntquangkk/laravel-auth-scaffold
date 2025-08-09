@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/triquang/laravel-auth-scaffold.svg?style=flat-square)](https://packagist.org/packages/triquang/laravel-auth-scaffold)
 [![License](https://img.shields.io/packagist/l/triquang/laravel-auth-scaffold.svg?style=flat-square)](https://github.com/ntquangkk/laravel-auth-scaffold?tab=MIT-1-ov-file)
 
-🚀 Quickly scaffold full Laravel authentication for **any Eloquent model**, supporting both **API** and **Web UI** — monolith or modular apps.
+🚀 Quickly scaffold full Laravel authentication for **any Eloquent model**, supporting **multi-auth** in both **API** and **Web UI** — for monolith or modular apps.
 
 This package accelerates authentication setup for **custom models** like `Admin`, `Client`, `Vendor`, etc., and works seamlessly with both **standard Laravel** and **modular Laravel** architectures (e.g., `nwidart/laravel-modules`).
 
@@ -187,15 +187,15 @@ This package adds **clear flags** in generated code to help developers easily fi
             $table->id();
             $table->string('name');
             $table->timestamps();
-        
-			// AUTH-SCAFFOLD-MISSING-COLUMNS
-			// Required authentication fields missing in 'admins' migration:
-			// $table->string('email')->unique();
-			// $table->string('password');
-			// $table->string('otp')->nullable();
-			// $table->timestamp('email_verified_at')->nullable();
-			// $table->string('remember_token')->nullable();
-			// AUTH-SCAFFOLD-MISSING-COLUMNS
+
+            // AUTH-SCAFFOLD-MISSING-COLUMNS
+            // Required authentication fields missing in 'admins' migration:
+            // $table->string('email')->unique();
+            // $table->string('password');
+            // $table->string('otp')->nullable();
+            // $table->timestamp('email_verified_at')->nullable();
+            // $table->string('remember_token')->nullable();
+            // AUTH-SCAFFOLD-MISSING-COLUMNS
         });
     }
 ```

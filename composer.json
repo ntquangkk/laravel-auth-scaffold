@@ -1,6 +1,6 @@
 {
   "name": "triquang/laravel-auth-scaffold",
-  "description": "Scaffold API & Web authentication for any Laravel model — supports multi-auth & modular structure.",
+  "description": "Scaffold API & Web authentication for any Eloquent model with multi-auth support — monolith or modular Laravel.",
   "version": "1.0.0",
   "type": "library",
   "license": "MIT",
@@ -35,7 +35,8 @@
     "web-auth",
     "module",
     "modular",
-    "generator"
+    "generator",
+    "ddd"
   ],
   "minimum-stability": "stable",
   "prefer-stable": true
