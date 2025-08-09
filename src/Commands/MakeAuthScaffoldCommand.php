@@ -268,12 +268,12 @@ class MakeAuthScaffoldCommand extends Command
 
             if (!empty($missingColumns)) {
                 // Append missing columns as comments with tag
-                $commentedColumns = "\n\t\t\t" . self::AUTH_SCAFFOLD_TAG . "\n";
-                $commentedColumns .= "\t\t\t// Required authentication fields missing in '{$modelTable}' migration:\n";
+                $commentedColumns = "\n            " . self::AUTH_SCAFFOLD_TAG . "\n";
+                $commentedColumns .= "            // Required authentication fields missing in '{$modelTable}' migration:\n";
                 foreach ($missingColumns as $definition) {
-                    $commentedColumns .= "\t\t\t// $definition\n";
+                    $commentedColumns .= "            // $definition\n";
                 }
-                $commentedColumns .= "\t\t\t" . self::AUTH_SCAFFOLD_TAG . "\n\n        ";
+                $commentedColumns .= "            " . self::AUTH_SCAFFOLD_TAG . "\n\n        ";
                 // Find the up method's Schema::create block for the specific table
                 $pattern = '/(Schema::create\s*\(\s*[\'"]' . preg_quote($modelTable, '/') . '[\'"],\s*function\s*\(Blueprint\s*\$table\)\s*\{[^}]*)(?=\s*\}\s*\);)/s';
                 if (preg_match($pattern, $existingContent, $matches)) {
