@@ -1,5 +1,5 @@
 {{ auto_gen_tag }}
-Route::prefix('{{ modelSnake }}')->middleware('web')->group(function () {
+Route::prefix('{{ modelKebab }}')->middleware('web')->group(function () {
     Route::middleware('guest:{{ modelSnake }}_web')->group(function () {
         Route::get('login', [{{ model }}WebAuthController::class, 'showLoginForm'])->name('{{ modelSnake }}.login');
         Route::post('login', [{{ model }}WebAuthController::class, 'login']);

@@ -26,6 +26,8 @@ class MakeAuthScaffoldCommand extends Command
 
     protected $model;
 
+    protected $modelKebab;
+
     protected $modelPlural;
 
     protected $modelSnake;
@@ -56,6 +58,7 @@ class MakeAuthScaffoldCommand extends Command
         $this->module = $this->option('module');
         $this->web = $this->option('web');
         $this->modelVar = Str::camel($this->model);
+        $this->modelKebab = Str::kebab($this->model);
         $this->modelPlural = Str::plural($this->model);
         $this->modelSnake = Str::snake($this->model);
 
@@ -436,8 +439,8 @@ class MakeAuthScaffoldCommand extends Command
         // Load and replace placeholders in the appropriate stub
         $stub = $this->getStub($this->web ? 'routes/web' : 'routes/api');
         $stub = str_replace(
-            ['{{ namespace }}', '{{ model }}', '{{ modelSnake }}', '{{ controller }}', '{{ auto_gen_tag }}'],
-            [$this->appNamespace, $this->model, $this->modelSnake, $controllerName, self::AUTO_GEN_TAG],
+            ['{{ namespace }}', '{{ model }}', '{{ modelSnake }}', '{{ modelKebab }}', '{{ controller }}', '{{ auto_gen_tag }}'],
+            [$this->appNamespace, $this->model, $this->modelSnake, $this->modelKebab, $controllerName, self::AUTO_GEN_TAG],
             $stub
         );
 
