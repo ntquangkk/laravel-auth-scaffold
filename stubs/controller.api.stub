@@ -3,14 +3,16 @@
 
 namespace {{ namespace }}\Http\Controllers\Auth;
 
+// use App\Support\Responses\ApiResponse;
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use {{ namespace }}\Requests\{{ model }}LoginRequest;
-use {{ namespace }}\Requests\{{ model }}RegisterRequest;
-use {{ namespace }}\Requests\{{ model }}ForgotPasswordRequest;
-use {{ namespace }}\Requests\{{ model }}ResetPasswordRequest;
-use {{ namespace }}\Services\{{ model }}AuthService;
+use Illuminate\Support\Facades\Log;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}LoginRequest;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}RegisterRequest;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}ForgotPasswordRequest;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}ResetPasswordRequest;
+use {{ namespace }}\Services\Auth\{{ model }}AuthService;
 
 class {{ model }}ApiAuthController extends Controller
 {
@@ -26,9 +28,19 @@ class {{ model }}ApiAuthController extends Controller
         try {
             $user = $this->{{ modelVar }}AuthService->register($request->validated());
             return response()->json(['message' => 'Registration successful', 'user' => $user], 201);
-        } catch (\Exception $e) {
-            \Log::error('Registration failed: ' . $e->getMessage());
+            // return ApiResponse::success(
+            //     message: 'Registration successful',
+            //     data: $user,
+            //     statusCode: 201,
+            // );
+        } catch (Exception $e) {
+            Log::error('Registration failed: ' . $e->getMessage());
             return response()->json(['error' => 'Registration failed: ' . $e->getMessage()], 400);
+            // return ApiResponse::error(
+            //     message: 'Registration failed',
+            //     errors: [$e->getMessage()],
+            //     statusCode: 400,
+            // );
         }
     }
 
@@ -38,11 +50,30 @@ class {{ model }}ApiAuthController extends Controller
             $token = $this->{{ modelVar }}AuthService->login($request->validated());
             if (!$token) {
                 return response()->json(['error' => 'Invalid credentials'], 401);
+                // return ApiResponse::error(
+                //     message: 'Incorrect login information',
+                //     errors: [],
+                //     statusCode: 401,
+                // );
             }
+
             return response()->json(['message' => 'Login successful', 'token' => $token]);
-        } catch (\Exception $e) {
-            \Log::error('Login failed: ' . $e->getMessage());
+            // return ApiResponse::success(
+            //     message: 'Login successful',
+            //     data: [
+            //         'token' => $token,
+            //         'token_type' => 'Bearer',
+            //     ]
+            // );
+        } catch (Exception $e) {
+            Log::error('Login failed: ' . $e->getMessage());
+
             return response()->json(['error' => $e->getMessage()], 401);
+            // return ApiResponse::error(
+            //     message: 'Login failed',
+            //     errors: [$e->getMessage()],
+            //     statusCode: 401,
+            // );
         }
     }
 
@@ -50,10 +81,18 @@ class {{ model }}ApiAuthController extends Controller
     {
         try {
             $this->{{ modelVar }}AuthService->logout($request->user());
+
             return response()->json(['message' => 'Logout successful']);
-        } catch (\Exception $e) {
-            \Log::error('Logout failed: ' . $e->getMessage());
+            // return ApiResponse::success('Logout successful');
+        } catch (Exception $e) {
+            Log::error('Logout failed: ' . $e->getMessage());
+
             return response()->json(['error' => 'Logout failed'], 500);
+            // return ApiResponse::error(
+            //     message: 'Logout failed',
+            //     errors: [$e->getMessage()],
+            //     statusCode: 500,
+            // );
         }
     }
 
@@ -61,10 +100,18 @@ class {{ model }}ApiAuthController extends Controller
     {
         try {
             $this->{{ modelVar }}AuthService->sendPasswordResetLink($request->validated());
+
             return response()->json(['message' => 'Password reset link sent']);
-        } catch (\Exception $e) {
-            \Log::error('Password reset link failed: ' . $e->getMessage());
+            // return ApiResponse::success('Password reset link sent');
+        } catch (Exception $e) {
+            Log::error('Password reset link failed: ' . $e->getMessage());
+
             return response()->json(['error' => $e->getMessage()], 400);
+            // return ApiResponse::error(
+            //     message: 'Password reset link failed',
+            //     errors: [$e->getMessage()],
+            //     statusCode: 400,
+            // );
         }
     }
 
@@ -72,10 +119,18 @@ class {{ model }}ApiAuthController extends Controller
     {
         try {
             $this->{{ modelVar }}AuthService->resetPassword($request->validated());
+
             return response()->json(['message' => 'Password reset successful']);
-        } catch (\Exception $e) {
-            \Log::error('Password reset failed: ' . $e->getMessage());
+            // return ApiResponse::success('Password reset successful');
+        } catch (Exception $e) {
+            Log::error('Password reset failed: ' . $e->getMessage());
+
             return response()->json(['error' => $e->getMessage()], 400);
+            // return ApiResponse::error(
+            //     message: 'Password reset failed',
+            //     errors: [$e->getMessage()],
+            //     statusCode: 400,
+            // );
         }
     }
 
@@ -83,10 +138,18 @@ class {{ model }}ApiAuthController extends Controller
     {
         try {
             $this->{{ modelVar }}AuthService->verifyOtp($request->only('email', 'otp'));
+
             return response()->json(['message' => 'Account verified']);
-        } catch (\Exception $e) {
-            \Log::error('OTP verification failed: ' . $e->getMessage());
+            // return ApiResponse::success('Account verified');
+        } catch (Exception $e) {
+            Log::error('OTP verification failed: ' . $e->getMessage());
+
             return response()->json(['error' => $e->getMessage()], 400);
+            // return ApiResponse::error(
+            //     message: 'OTP verification failed',
+            //     errors: [$e->getMessage()],
+            //     statusCode: 400,
+            // );
         }
     }
 }

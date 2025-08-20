@@ -4,13 +4,14 @@
 namespace {{ namespace }}\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use {{ namespace }}\Requests\{{ model }}LoginRequest;
-use {{ namespace }}\Requests\{{ model }}RegisterRequest;
-use {{ namespace }}\Requests\{{ model }}ForgotPasswordRequest;
-use {{ namespace }}\Requests\{{ model }}ResetPasswordRequest;
-use {{ namespace }}\Services\{{ model }}AuthService;
+use Illuminate\Support\Facades\Log;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}LoginRequest;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}RegisterRequest;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}ForgotPasswordRequest;
+use {{ namespace }}\Http\Requests\Auth\{{ model }}ResetPasswordRequest;
+use {{ namespace }}\Services\Auth\{{ model }}AuthService;
 
 class {{ model }}WebAuthController extends Controller
 {
@@ -31,8 +32,8 @@ class {{ model }}WebAuthController extends Controller
         try {
             $this->{{ modelVar }}AuthService->register($request->validated());
             return redirect()->route('{{ modelSnake }}.verify-otp')->with('message', 'Registration successful. Please verify your OTP.');
-        } catch (\Exception $e) {
-            \Log::error('Web registration failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Web registration failed: ' . $e->getMessage());
             return back()->withErrors(['email' => $e->getMessage()]);
         }
     }
@@ -47,8 +48,8 @@ class {{ model }}WebAuthController extends Controller
         try {
             $user = $this->{{ modelVar }}AuthService->webLogin($request->validated());
             return redirect()->intended(route('home'))->with('message', 'Login successful');
-        } catch (\Exception $e) {
-            \Log::error('Web login failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Web login failed: ' . $e->getMessage());
             return back()->withErrors(['email' => $e->getMessage()]);
         }
     }
@@ -58,8 +59,8 @@ class {{ model }}WebAuthController extends Controller
         try {
             $this->{{ modelVar }}AuthService->webLogout();
             return redirect()->route('{{ modelSnake }}.login')->with('message', 'Logout successful');
-        } catch (\Exception $e) {
-            \Log::error('Web logout failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Web logout failed: ' . $e->getMessage());
             return redirect()->route('{{ modelSnake }}.login')->with('error', 'Logout failed: ' . $e->getMessage());
         }
     }
@@ -74,8 +75,8 @@ class {{ model }}WebAuthController extends Controller
         try {
             $this->{{ modelVar }}AuthService->sendPasswordResetLink($request->validated());
             return back()->with('message', 'Password reset link sent');
-        } catch (\Exception $e) {
-            \Log::error('Web password reset link failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Web password reset link failed: ' . $e->getMessage());
             return back()->withErrors(['email' => $e->getMessage()]);
         }
     }
@@ -90,8 +91,8 @@ class {{ model }}WebAuthController extends Controller
         try {
             $this->{{ modelVar }}AuthService->resetPassword($request->validated());
             return redirect()->route('{{ modelSnake }}.login')->with('message', 'Password reset successful');
-        } catch (\Exception $e) {
-            \Log::error('Web password reset failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Web password reset failed: ' . $e->getMessage());
             return back()->withErrors(['token' => $e->getMessage()]);
         }
     }
@@ -106,8 +107,8 @@ class {{ model }}WebAuthController extends Controller
         try {
             $this->{{ modelVar }}AuthService->verifyOtp($request->only('email', 'otp'));
             return redirect()->route('{{ modelSnake }}.login')->with('message', 'Account verified');
-        } catch (\Exception $e) {
-            \Log::error('Web OTP verification failed: ' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Web OTP verification failed: ' . $e->getMessage());
             return back()->withErrors(['otp' => $e->getMessage()]);
         }
     }

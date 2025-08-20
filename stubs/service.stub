@@ -1,7 +1,7 @@
 <?php
 {{ auto_gen_flag }}
 
-namespace {{ namespace }}\Services;
+namespace {{ namespace }}\Services\Auth;
 
 use {{ namespace }}\Models\{{ model }};
 use Illuminate\Support\Facades\Auth;
@@ -84,8 +84,9 @@ class {{ model }}AuthService
         if ($user && Hash::check($credentials['password'], $user->password)) {
             // Uncomment for using OTP
             // if (!$user->email_verified_at) {
-            //     throw new \Exception('Account not verified. Please check your email for OTP.');
+            //     throw new \Exception('Email not verified. Please check your email for OTP.');
             // }
+
             return $user->createToken('auth_token')->plainTextToken;
         }
 

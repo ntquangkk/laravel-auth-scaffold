@@ -1,7 +1,7 @@
 <?php
 {{ auto_gen_flag }}
 
-namespace {{ namespace }}\Requests;
+namespace {{ namespace }}\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 

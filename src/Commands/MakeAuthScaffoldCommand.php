@@ -107,10 +107,10 @@ class MakeAuthScaffoldCommand extends Command
     protected function ensureDirectoriesExist()
     {
         $dirs = [
-            "{$this->appPath}/Http/Controllers/Auth",
             "{$this->appPath}/Models",
-            "{$this->appPath}/Services",
-            "{$this->appPath}/Requests",
+            "{$this->appPath}/Http/Controllers/Auth",
+            "{$this->appPath}/Http/Requests/Auth",
+            "{$this->appPath}/Services/Auth",
             "{$this->basePath}/Routes",
             "{$this->basePath}/database/migrations",
         ];
@@ -180,7 +180,7 @@ class MakeAuthScaffoldCommand extends Command
                     "     * To enable full authentication and API token support, ensure the following:\n" .
                     "     * - The class extends: Illuminate\Foundation\Auth\User (as Authenticatable)\n" .
                     "     * - The trait used: Laravel\Sanctum\HasApiTokens (for API token support)\n" .
-                    "     * - The \$fillable array includes: ['email', 'password', 'otp']\n" .
+                    "     * - The \$fillable array includes: ['name', 'email', 'password', 'otp']\n" .
                     "     */\n";
 
         // Find the class declaration and insert comments after it
@@ -203,8 +203,12 @@ class MakeAuthScaffoldCommand extends Command
     protected function isModelAuthCompatible($modelContent)
     {
         // Check if model extends Authenticatable
-        $extendsAuthenticatable = strpos($modelContent, 'extends Authenticatable') !== false ||
-            strpos($modelContent, 'Illuminate\Foundation\Auth\User') !== false;
+        $extendsAuthenticatable = strpos($modelContent, 'extends Authenticatable') !== false
+             || strpos($modelContent, 'Illuminate\Foundation\Auth\User') !== false
+             || strpos($modelContent, 'email') !== false
+             || strpos($modelContent, 'name') !== false
+             || strpos($modelContent, 'password') !== false
+             || strpos($modelContent, 'otp') !== false;
 
         if (!$extendsAuthenticatable) {
             $this->log_question("Model does not extend Authenticatable.");
@@ -220,6 +224,7 @@ class MakeAuthScaffoldCommand extends Command
 
         // Define required auth columns
         $requiredColumns = [
+            'name' => '$table->string(\'name\');',
             'email' => '$table->string(\'email\')->unique();',
             'password' => '$table->string(\'password\');',
             'otp' => '$table->string(\'otp\')->nullable();',
@@ -372,7 +377,7 @@ class MakeAuthScaffoldCommand extends Command
 
     protected function generateService()
     {
-        $servicePath = "{$this->appPath}/Services/{$this->model}AuthService.php";
+        $servicePath = "{$this->appPath}/Services/Auth/{$this->model}AuthService.php";
         
         if ($this->files->exists($servicePath)) {
             $this->log_line("Service {$this->model}AuthService already exists, skipping creation.");
@@ -394,8 +399,8 @@ class MakeAuthScaffoldCommand extends Command
     {
         $requests = ['Register', 'Login', 'ForgotPassword', 'ResetPassword'];
         foreach ($requests as $request) {
-            $requestPath = "{$this->appPath}/Requests/{$this->model}{$request}Request.php";
-            
+            $requestPath = "{$this->appPath}/Http/Requests/Auth/{$this->model}{$request}Request.php";
+
             if ($this->files->exists($requestPath)) {
                 $this->log_line("Request {$this->model}{$request}Request already exists, skipping creation.");
                 continue;
