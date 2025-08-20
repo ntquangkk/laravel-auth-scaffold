@@ -9,5 +9,9 @@ Route::prefix('{{ modelKebab }}')->group(function () {
     // Ensure '{{ modelSnake }}_api' guard is in middleware for {{ model }}
     Route::middleware('auth:{{ modelSnake }}_api')->group(function () {
         Route::post('logout', [{{ model }}ApiAuthController::class, 'logout']);
+
+        Route::get('me', function (Request $request) {
+            return $request->user()->makeHidden(['password', 'remember_token']);
+        });
     });
 });
