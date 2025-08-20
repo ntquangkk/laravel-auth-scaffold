@@ -1,7 +1,7 @@
 {
   "name": "triquang/laravel-auth-scaffold",
   "description": "Scaffold API & Web authentication for any Eloquent model with multi-auth support — monolith or modular Laravel.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "library",
   "license": "MIT",
   "authors": [

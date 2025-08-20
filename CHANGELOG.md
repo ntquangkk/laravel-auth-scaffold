@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.0.0] - 2025-08-20
+
+### Added
+- Added `otp` field to authentication model
+- New `/me` route for user profile access
+
+### Changed
+- Replaced tabs with spaces for consistent formatting
+- Updated route prefixes to kebab-case
+- Reorganized file paths for Requests, Controllers, and Services
+- Enhanced README and composer.json documentation
+
 ## [1.0.0] - 2025-08-01
 ### Added
 - First stable release of **Laravel Auth Scaffold**.
