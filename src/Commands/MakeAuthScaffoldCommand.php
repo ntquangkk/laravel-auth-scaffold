@@ -428,15 +428,26 @@ class MakeAuthScaffoldCommand extends Command
         // Initialize route file content
         $routeContent = $this->files->exists($routePath) 
             ? $this->files->get($routePath) 
-            : "<?php\n\nuse Illuminate\Support\Facades\Route;\n\n";
+            : "<?php\n\n";
 
-        // Add controller import if not already present
-        if (strpos($routeContent, $controllerUseStatement) === false) {
-            $routeContent = preg_replace("/^<\?php\n/", "<?php\n\n{$controllerUseStatement}\n", $routeContent);
+        $routeContent = preg_replace("/^<\?php\s*/", "<?php\n\n", $routeContent);
+
+        // Define required use statements
+        $requiredUseStatements = [
+            "use Illuminate\Support\Facades\Route;",
+            "use Illuminate\Http\Request;",
+            $controllerUseStatement,
+        ];
+
+        // Add missing use statements
+        foreach ($requiredUseStatements as $useStatement) {
+            if (strpos($routeContent, $useStatement) === false) {
+                $routeContent = preg_replace("/^<\?php\n\n/", "<?php\n\n{$useStatement}\n", $routeContent);
+            }
         }
 
         // Check if route group for this model already exists
-        if (strpos($routeContent, "Route::prefix('{$this->modelSnake}')->group") !== false) {
+        if (strpos($routeContent, "auth:{$this->modelSnake}_api") !== false || strpos($routeContent, "auth:{$this->modelSnake}_web") !== false) {
             $this->log_line("Routes for {$this->model} already exist in {$routePath}, skipping.");
             return;
         }

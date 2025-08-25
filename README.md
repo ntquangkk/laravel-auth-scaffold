@@ -113,19 +113,21 @@ Example with `--model=Admin`:
 ```
 app/
 ├── Http/
-│   └── Controllers/
-│       └── Auth/
-│           ├── AdminApiAuthController.php
-│           └── AdminWebAuthController.php  # If --web
+│   ├── Controllers/
+│   │   └── Auth/
+│   │       ├── AdminApiAuthController.php
+│   │       └── AdminWebAuthController.php  # If --web
+│   └── Requests
+│       └── Auth
+│           ├── AdminForgotPasswordRequest.php
+│           ├── AdminLoginRequest.php
+│           ├── AdminRegisterRequest.php
+│           └── AdminResetPasswordRequest.php
 ├── Models/
 │   └── Admin.php
-├── Services/
-│   └── AdminAuthService.php
-├── Requests/
-│   ├── AdminLoginRequest.php
-│   ├── AdminRegisterRequest.php
-│   ├── AdminForgotPasswordRequest.php
-│   └── AdminResetPasswordRequest.php
+└── Services/
+    └── Auth/
+        └── AdminAuthService.php
 database/
 └── migrations/
     ├── create_admins_table.php

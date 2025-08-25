@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1] - 2025-08-25
+
+### Changed
+- Standardized controller responses
+- Updated README examples
+- Improved API route check
+
 ## [2.0.0] - 2025-08-20
 
 ### Added
